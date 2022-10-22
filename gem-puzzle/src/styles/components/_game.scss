@@ -1,0 +1,69 @@
+.buttons {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  row-gap: 20px;
+  margin-top: 10px;
+  align-items: center;
+
+  @include media-tablet {
+    margin: 100px 0 50px;
+    flex-direction: row;
+    padding: 0 50px;
+    justify-content: space-between;
+  }
+
+  @include media-mobile {
+    margin: 50px 0 0;
+    padding: 0 10px;
+  }
+}
+
+.game__wrapper {
+  margin: 10px;
+}
+
+.game-stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  align-items: center;
+  @include media-tablet {
+    margin: 10px 0 50px;
+    flex-direction: row;
+    padding: 0 50px;
+    justify-content: space-between;
+  }
+  @include media-mobile {
+    margin: 20px 0 20px;
+    padding: 0 10px;
+  }
+}
+
+.current-game {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  row-gap: 20px;
+  @include media-tablet {
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 100px;
+  }
+  @include media-mobile {
+    column-gap: 10px;
+  }
+}
+.moves {
+  width: 150px;
+  @include media-mobile {
+    width: auto;
+  }
+}
+.time {
+  width: 150px;
+  @include media-mobile {
+    width: auto;
+  }
+}

@@ -1,0 +1,45 @@
+html {
+  font-size: 10px;
+  height: 100%;
+}
+
+body {
+  font-family: 'Audiowide', sans-serif;
+  font-size: 1.6rem;
+  color: $color-additional;
+  height: 100%;
+  background: $color-primary;
+}
+
+canvas {
+  font-family: 'Audiowide', sans-serif;
+  border: 1px solid #d3d3d3;
+  background-color: #bbbbbb;
+  cursor: pointer;
+  @include media-tablet {
+    cursor: none;
+  }
+}
+
+button {
+  width: 150px;
+  height: 50px;
+  font-family: 'Audiowide', sans-serif;
+  outline: none;
+  cursor: pointer;
+  background-color: $color-primary;
+  border: 2px solid $color-additional;
+  color: $color-additional;
+  @include media-tablet {
+    cursor: none;
+  }
+  &:hover {
+    transform: scale(1.05);
+    @include media-tablet {
+      transform: none;
+    }
+  }
+  &:active {
+    transform: scale(0.95);
+  }
+}

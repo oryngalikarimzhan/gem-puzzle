@@ -1,0 +1,20 @@
+.wrapper {
+  height: 100%;
+  max-width: $content-width-desktop;
+  margin: auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  @include media-tablet {
+    max-width: $content-width-tablet;
+    margin: auto;
+    flex-direction: column;
+  }
+
+  @include media-mobile {
+    max-width: $content-width-mobile;
+    margin: auto;
+    justify-content: space-around;
+  }
+}
