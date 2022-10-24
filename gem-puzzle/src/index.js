@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-lonely-if */
 /* eslint-disable radix */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-nested-ternary */
@@ -6,7 +9,6 @@
 /* eslint-disable no-loop-func */
 /* eslint-disable no-shadow */
 /* eslint-disable new-cap */
-/* eslint-disable no-use-before-define */
 /* eslint-disable no-plusplus */
 
 import './styles/style.css';
@@ -36,7 +38,14 @@ let timeText = '';
 let mySound = new Sound(moveSound);
 let speed;
 let currentTile;
-
+let initialPosition;
+let toForward = true;
+let isEnding = false;
+let positionChanged = false;
+let destination;
+let tempDistance;
+let isEnabled = true;
+let isHorizontal = true;
 myDB.setItem('bestResults', JSON.stringify([
   { size: 3, results: [] },
   { size: 4, results: [] },
@@ -69,7 +78,7 @@ export function initGame() {
     puzzle.start(updateGameArea, updateTime);
     document.querySelector('.start').textContent = 'Restart';
   } else {
-    showGreetingText();
+    addGameAreaEventHandlers();
   }
 }
 
@@ -88,13 +97,13 @@ export function resetStats() {
   updateTime();
 }
 
-function showGreetingText() {
+function addGameAreaEventHandlers() {
   new Component(0, areaSize / 3.7, areaSize / 2.6, 'START', 0, false, '').update(tileColor, areaSize, size);
-  addGameAreaClickHandler();
-  // addTileDragAndDropHandler();
+  addOnClickGameStarter();
+  addTilesController();
 }
 
-function addGameAreaClickHandler() {
+function addOnClickGameStarter() {
   document.querySelector('canvas').addEventListener('click', (e) => {
     let x = e.offsetX;
     let y = e.offsetY;
@@ -103,33 +112,9 @@ function addGameAreaClickHandler() {
         && y >= areaSize / 2.2
         && y <= areaSize / 1.8) {
       setTimeout(startNewGame, 100);
-    } else {
-      puzzle.x = e.offsetX;
-      puzzle.y = e.offsetY;
     }
-    defineCurrentTile();
   });
 }
-
-// function addTileDragAndDropHandler() {
-//   document.querySelector('canvas').addEventListener('mousedown', (e) => {
-//     puzzle.x = e.offsetX;
-//     puzzle.y = e.offsetY;
-//     for (let i = 0; i < tiles.length; i++) {
-//       if (tiles[i].x <= puzzle.x
-//           && tiles[i].x + distance - 2 >= puzzle.x
-//           && tiles[i].y <= puzzle.y
-//           && tiles[i].y + distance - 2 >= puzzle.y) {
-//         if (tiles[i].moveable) {
-//           currentTile = tiles[i];
-//           document.querySelector('canvas').addEventListener('mousemove', (e) => {
-//             console.log(e.offsetX, e.offsetY);
-//           });
-//         }
-//       }
-//     }
-//   });
-// }
 
 function prepareTiles() {
   let ids = getShuffledNumbers();
@@ -180,30 +165,6 @@ export function defineSpeed() {
   else speed = 20;
 }
 
-function defineCurrentTile() {
-  if (puzzle.x && puzzle.y) {
-    for (let i = 0; i < tiles.length; i++) {
-      if (tiles[i].x <= puzzle.x
-          && tiles[i].x + distance - 2 >= puzzle.x
-          && tiles[i].y <= puzzle.y
-          && tiles[i].y + distance - 2 >= puzzle.y) {
-        if (tiles[i].moveable) {
-          if (soundIsOn) mySound.play();
-          currentTile = tiles[i];
-          let tempDirection = currentTile.direction;
-          tiles.forEach(tile => {
-            tile.moveable = false;
-            tile.direction = '';
-          });
-          currentTile.direction = tempDirection;
-        }
-      }
-    }
-  }
-  puzzle.x = null;
-  puzzle.y = null;
-}
-
 export function updateGameArea() {
   puzzle.clear();
   moveTile();
@@ -247,29 +208,139 @@ function saveResult() {
   myDB.setItem('bestResults', JSON.stringify(allBestResults));
 }
 
+function addTilesController() {
+  let canvas = document.querySelector('canvas');
+  canvas.addEventListener('mousedown', (e) => {
+    if (isEnabled) {
+      puzzle.x = e.offsetX;
+      puzzle.y = e.offsetY;
+      for (let i = 0; i < tiles.length; i++) {
+        if (tiles[i].x <= puzzle.x
+            && tiles[i].x + distance - 2 >= puzzle.x
+            && tiles[i].y <= puzzle.y
+            && tiles[i].y + distance - 2 >= puzzle.y) {
+          if (tiles[i].moveable) {
+            isEnabled = false;
+            if (soundIsOn) mySound.play();
+            currentTile = tiles[i];
+            if (tiles[i].direction === 'up' || tiles[i].direction === 'down') {
+              isHorizontal = false;
+              initialPosition = currentTile.y;
+            } else if (tiles[i].direction === 'right' || tiles[i].direction === 'left') {
+              isHorizontal = true;
+              initialPosition = currentTile.x;
+            }
+            canvas.addEventListener('mousemove', mouseMoveControl);
+            canvas.addEventListener('mouseup', dropControl);
+          }
+        }
+      }
+    }
+  });
+}
+
+function mouseMoveControl(e) {
+  let step;
+  let beforeStep;
+  let difference;
+  if (isHorizontal) {
+    step = e.offsetX - puzzle.x;
+    beforeStep = currentTile.x;
+    if (currentTile.direction === 'right' && step >= 0 && step <= distance) {
+      currentTile.x = initialPosition + step;
+      difference = currentTile.x - beforeStep;
+      if (difference !== 0) {
+        toForward = difference > 0;
+      }
+    } else if (currentTile.direction === 'left' && step >= -distance && step <= 0) {
+      currentTile.x = initialPosition + step;
+      difference = currentTile.x - beforeStep;
+      if (difference !== 0) {
+        toForward = difference < 0;
+      }
+    }
+  } else {
+    step = e.offsetY - puzzle.y;
+    beforeStep = currentTile.y;
+    if (currentTile.direction === 'down' && step > 0 && step <= distance) {
+      currentTile.y = initialPosition + step;
+      difference = currentTile.y - beforeStep;
+      if (difference !== 0) {
+        toForward = difference > 0;
+      }
+    } else if (currentTile.direction === 'up' && step >= -distance && step < 0) {
+      currentTile.y = initialPosition + step;
+      difference = currentTile.y - beforeStep;
+      if (difference !== 0) {
+        toForward = difference < 0;
+      }
+    }
+  }
+}
+
+function dropControl() {
+  let canvas = document.querySelector('canvas');
+  canvas.removeEventListener('mousemove', mouseMoveControl);
+  if (currentTile) {
+    if (toForward) {
+      positionChanged = true;
+      if (currentTile.direction === 'right' || currentTile.direction === 'down') {
+        destination = initialPosition + distance;
+        tempDistance = isHorizontal ? destination - currentTile.x : destination - currentTile.y;
+      } else if (currentTile.direction === 'left' || currentTile.direction === 'up') {
+        destination = initialPosition - distance;
+        tempDistance = isHorizontal ? currentTile.x - destination : currentTile.y - destination;
+      }
+    } else {
+      positionChanged = false;
+      destination = initialPosition;
+      if (currentTile.direction === 'right' || currentTile.direction === 'down') {
+        tempDistance = isHorizontal ? currentTile.x - destination : currentTile.y - destination;
+      } else if (currentTile.direction === 'left' || currentTile.direction === 'up') {
+        tempDistance = isHorizontal ? destination - currentTile.x : destination - currentTile.y;
+      }
+    }
+    isEnding = true;
+  }
+}
+
 function moveTile() {
   if (isWin()) {
     puzzle.stop();
     showCongratulationMessage();
     saveResult();
   }
-  if (currentTile && distance > 0) {
-    if (currentTile.direction === 'left') {
-      if (distance < speed) currentTile.x -= distance;
-      else currentTile.x -= speed;
-    } else if (currentTile.direction === 'right') {
-      if (distance < speed) currentTile.x += distance;
-      else currentTile.x += speed;
-    } else if (currentTile.direction === 'down') {
-      if (distance < speed) currentTile.y += distance;
-      else currentTile.y += speed;
-    } else if (currentTile.direction === 'up') {
-      if (distance < speed) currentTile.y -= distance;
-      else currentTile.y -= speed;
-    }
-    distance -= speed;
 
-    if (distance <= 0) {
+  if (isEnding) {
+    if (currentTile.direction === 'right') {
+      if (toForward) {
+        tempDistance < speed ? currentTile.x += tempDistance : currentTile.x += speed;
+      } else {
+        tempDistance < speed ? currentTile.x -= tempDistance : currentTile.x -= speed;
+      }
+    } else if (currentTile.direction === 'left') {
+      if (toForward) {
+        tempDistance < speed ? currentTile.x -= tempDistance : currentTile.x -= speed;
+      } else {
+        tempDistance < speed ? currentTile.x += tempDistance : currentTile.x += speed;
+      }
+    } else if (currentTile.direction === 'down') {
+      if (toForward) {
+        tempDistance < speed ? currentTile.y += tempDistance : currentTile.y += speed;
+      } else {
+        tempDistance < speed ? currentTile.y -= tempDistance : currentTile.y -= speed;
+      }
+    } else if (currentTile.direction === 'up') {
+      if (toForward) {
+        tempDistance < speed ? currentTile.y -= tempDistance : currentTile.y -= speed;
+      } else {
+        tempDistance < speed ? currentTile.y += tempDistance : currentTile.y += speed;
+      }
+    }
+
+    tempDistance -= speed;
+
+    if (tempDistance <= 0) {
       endMove();
     }
   }
@@ -277,8 +348,29 @@ function moveTile() {
 }
 
 function endMove() {
-  updateNeighbors();
-  currentTile.moveable = true;
+  if (positionChanged) {
+    let tempDirection = currentTile.direction;
+    tiles.forEach(tile => {
+      tile.moveable = false;
+      tile.direction = '';
+    });
+    updateNeighbors();
+    currentTile.direction = tempDirection;
+    currentTile.moveable = true;
+    updateOwnPosition();
+    moves++;
+    updateMoves();
+  }
+  isEnabled = true;
+  currentTile = null;
+  puzzle.x = null;
+  puzzle.y = null;
+  isEnding = false;
+  mySound.reload();
+  toForward = true;
+}
+
+function updateOwnPosition() {
   if (currentTile.direction === 'left') {
     currentTile.direction = 'right';
     currentTile.position -= 1;
@@ -292,11 +384,6 @@ function endMove() {
     currentTile.direction = 'down';
     currentTile.position -= size;
   }
-  currentTile = null;
-  distance = areaSize / size;
-  moves++;
-  updateMoves();
-  mySound.reload();
 }
 
 function updateNeighbors() {

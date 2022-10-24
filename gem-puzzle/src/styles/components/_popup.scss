@@ -1,17 +1,3 @@
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: $color-primary;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  transition: 0.5s ease-in-out;
-}
-
 .overlay__button {
   position: relative;
   margin-bottom: 20px;
@@ -21,9 +7,16 @@
 }
 
 .overlay__message {
-  max-width: 250px;
+  max-width: 500px;
+  @include media-mobile {
+    max-width: 250px;
+  }
   h1 {
     text-align: center;
+    font-size: 5rem;
+    @include media-mobile {
+      font-size: 2rem;
+    }
   }
 }
 

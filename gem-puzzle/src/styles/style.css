@@ -11,7 +11,7 @@ html {
 }
 
 body {
-  font-family: "Audiowide", sans-serif;
+  font-family: "Audiowide", "Verdana";
   font-size: 1.6rem;
   color: white;
   height: 100%;
@@ -19,7 +19,7 @@ body {
 }
 
 canvas {
-  font-family: "Audiowide", sans-serif;
+  font-family: "Audiowide", "Verdana";
   border: 1px solid #d3d3d3;
   background-color: #bbbbbb;
   cursor: pointer;
@@ -33,7 +33,7 @@ canvas {
 button {
   width: 150px;
   height: 50px;
-  font-family: "Audiowide", sans-serif;
+  font-family: "Audiowide", "Verdana";
   outline: none;
   cursor: pointer;
   background-color: black;
@@ -124,6 +124,29 @@ button:active {
   transition: 0.5s ease-in-out;
 }
 
+.wrapper {
+  height: 100%;
+  max-width: 1280px;
+  margin: auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+@media (max-width: 1279px) {
+  .wrapper {
+    max-width: 768px;
+    margin: auto;
+    flex-direction: column;
+  }
+}
+@media (max-width: 767px) {
+  .wrapper {
+    max-width: 320px;
+    margin: auto;
+    justify-content: space-around;
+  }
+}
+
 .overlay__button {
   position: relative;
   margin-bottom: 20px;
@@ -133,10 +156,21 @@ button:active {
 }
 
 .overlay__message {
-  max-width: 250px;
+  max-width: 500px;
+}
+@media (max-width: 767px) {
+  .overlay__message {
+    max-width: 250px;
+  }
 }
 .overlay__message h1 {
   text-align: center;
+  font-size: 5rem;
+}
+@media (max-width: 767px) {
+  .overlay__message h1 {
+    font-size: 2rem;
+  }
 }
 
 .sound {
@@ -274,29 +308,6 @@ button:active {
 
 .hidden {
   display: none;
-}
-
-.wrapper {
-  height: 100%;
-  max-width: 1280px;
-  margin: auto;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-@media (max-width: 1279px) {
-  .wrapper {
-    max-width: 768px;
-    margin: auto;
-    flex-direction: column;
-  }
-}
-@media (max-width: 767px) {
-  .wrapper {
-    max-width: 320px;
-    margin: auto;
-    justify-content: space-around;
-  }
 }
 
 .buttons {
