@@ -6,7 +6,7 @@
 import {
   isWin, isStarted, distance, myDB, tiles, moves, seconds, minutes, hours,
   resetStats, initGame, updateTime, updateMoves, defineSpeed, updateGameArea,
-  setMoves, setTimes, setDistance, addTile, doStarted
+  setMoves, setTimes, setDistance, addTile, doStarted, addTilesController
 } from '../index';
 import { Component } from './Component';
 import { puzzle } from './puzzle';
@@ -19,78 +19,89 @@ export let soundIsOn = true;
 let screenWidth = window.innerWidth;
 
 export function addColorChangeEventHandler() {
-  document.querySelectorAll('.color').forEach(el => {
-    el.addEventListener('click', () => {
-      tileColor = getComputedStyle(el).getPropertyValue('background-color');
+  document.querySelectorAll('.color').forEach(elem => {
+    elem.addEventListener('click', () => {
+      tileColor = getComputedStyle(elem).getPropertyValue('background-color');
       document.querySelector('.current-color').classList.remove('current-color');
-      el.classList.add('current-color');
+      elem.classList.add('current-color');
     });
   });
 }
 
 export function addSizeChangeEventHandler() {
-  document.querySelectorAll('.size').forEach(el => {
-    el.addEventListener('click', () => {
-      size = parseInt(el.textContent);
+  document.querySelectorAll('.size').forEach(elem => {
+    elem.addEventListener('click', () => {
+      size = parseInt(elem.textContent);
       document.querySelector('.current-size').classList.remove('current-size');
-      el.classList.add('current-size');
-      resetStats();
-      doStarted(false);
-      initGame();
+      elem.classList.add('current-size');
+      reInitGame();
     });
   });
 }
 
 export function continueSavedGame() {
   let savedGame = JSON.parse(myDB.getItem('savedGame'));
-  if (savedGame !== null) {
+  if (savedGame) {
     resetStats();
     setTimes(savedGame.seconds, savedGame.minutes, savedGame.hours);
     setMoves(savedGame.moves);
-    size = savedGame.size;
-    if (areaSize === savedGame.areaSize) setDistance(savedGame.areaSize / savedGame.size);
-    else setDistance(areaSize / savedGame.size);
     updateTime();
     updateMoves();
-    savedGame.tiles.forEach(tile => {
-      if (areaSize === savedGame.areaSize) {
+
+    size = savedGame.size;
+    if (areaSize === savedGame.areaSize) {
+      setDistance(savedGame.areaSize / size);
+      savedGame.tiles.forEach(tile => {
         addTile(new Component(tile.width, tile.x, tile.y, tile.id, tile.position, tile.moveable, tile.direction));
-      } else {
-        addTile(new Component(areaSize / size - 2, distance * parseInt(tile.x / (savedGame.areaSize / savedGame.size)) + 1, distance * parseInt(tile.y / (savedGame.areaSize / savedGame.size)) + 1, tile.id, tile.position, tile.moveable, tile.direction));
-      }
-    });
+      });
+    } else {
+      setDistance(areaSize / size);
+      savedGame.tiles.forEach(tile => {
+        addTile(new Component(
+          distance - 2,
+          distance * parseInt(tile.x / (savedGame.areaSize / savedGame.size)) + 1,
+          distance * parseInt(tile.y / (savedGame.areaSize / savedGame.size)) + 1,
+          tile.id, tile.position, tile.moveable, tile.direction
+        ));
+      });
+    }
+
     document.querySelector('.current-size').classList.remove('current-size');
     Array.from(document.querySelectorAll('.size')).find(el => parseInt(el.textContent) === size).classList.add('current-size');
+    
     if (!isStarted) {
       doStarted(true);
+      addTilesController();
       document.querySelector('.start').textContent = 'Restart';
     }
     defineSpeed();
-    puzzle.start(updateGameArea, updateTime);
+
+    new Component(0, areaSize / 7, areaSize / 2.6, 'CONTINUING', 0, false, '').update(tileColor, areaSize, size);
+    setTimeout(() => {
+      puzzle.clear();
+      puzzle.start(updateGameArea, updateTime);
+    }, 800);
   }
 }
 
 export function showResultsList() {
   puzzle.pause();
   document.querySelector('.overlay').classList.remove('hidden');
+
   Array.from(document.querySelector('.overlay').children).forEach(child => {
     if (!child.classList.contains('hidden')) child.classList.add('hidden');
   });
   document.querySelector('.overlay__button').classList.remove('hidden');
   document.querySelector('.results').classList.remove('hidden');
+
   let results = JSON.parse(myDB.getItem('bestResults')).find(obj => obj.size === size).results;
   let resultMoves = document.querySelectorAll('.result-moves');
   let resultTimes = document.querySelectorAll('.result-time');
   let resultDates = document.querySelectorAll('.result-date');
-  resultMoves.forEach(el => {
-    el.textContent = '--';
-  });
-  resultTimes.forEach(el => {
-    el.textContent = '--:--:--';
-  });
-  resultDates.forEach(el => {
-    el.textContent = '--.--.-- --:--';
-  });
+
+  resultMoves.forEach(el => el.textContent = '--');
+  resultTimes.forEach(el => el.textContent = '--:--:--');
+  resultDates.forEach(el => el.textContent = '--.--.-- --:--');
 
   for (let i = 0; i < results.length; i++) {
     resultMoves[i].textContent = results[i].moves;
@@ -100,8 +111,8 @@ export function showResultsList() {
 }
 
 export function saveCurrentGame() {
-  if (!isWin()) {
-    myDB.setItem('savedGame', JSON.stringify({
+  if (!isWin() && isStarted) {
+    myDB.setItem('savedGame', JSON.stringify({ 
       tiles, moves, seconds, minutes, hours, areaSize, size
     }));
   }
@@ -119,7 +130,7 @@ export function toggleSound() {
 
 export function removeScreenOverlay() {
   document.querySelector('.overlay').classList.add('hidden');
-  if (!isWin()) puzzle.continue(updateTime);
+  if (!isWin() && isStarted) puzzle.continue(updateTime);
 }
 
 export function showConfigMenu() {
@@ -135,22 +146,17 @@ export function showConfigMenu() {
 }
 
 export function defineAreaSize() {
-  if (screenWidth >= 1280 && areaSize !== 900) {
-    areaSize = 900;
-    resetStats();
-    doStarted(false);
-    initGame();
-  } else if (screenWidth >= 768 && screenWidth < 1280 && areaSize !== 700) {
-    areaSize = 700;
-    resetStats();
-    doStarted(false);
-    initGame();
-  } else if (screenWidth < 768 && areaSize !== 300) {
-    areaSize = 300;
-    resetStats();
-    doStarted(false);
-    initGame();
-  }
+  if (screenWidth >= 1280 && areaSize !== 750) reInitGame(750);
+  else if (screenWidth >= 768 && screenWidth < 1280 && areaSize !== 700) reInitGame(700);
+  else if (screenWidth < 768 && areaSize !== 300) reInitGame(300);
+}
+
+function reInitGame(newAreaSize) {
+  if (newAreaSize) areaSize = newAreaSize;
+  doStarted(false);
+  document.querySelector('.start').textContent = 'Start';
+  resetStats();
+  initGame();
 }
 
 export function addScreenResizeHandler() {

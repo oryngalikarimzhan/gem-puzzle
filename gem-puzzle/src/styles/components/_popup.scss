@@ -115,6 +115,7 @@
   @include media-mobile {
     column-gap: 5px;
     font-size: 1.4rem;
+    justify-content: space-around;
   }
 }
 

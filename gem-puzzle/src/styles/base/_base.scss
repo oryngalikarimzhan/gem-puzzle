@@ -1,37 +1,34 @@
 html {
   font-size: 10px;
-  height: 100%;
 }
 
 body {
-  font-family: 'Audiowide', 'Verdana';
+  font-family: 'Audiowide';
   font-size: 1.6rem;
   color: $color-additional;
-  height: 100%;
   background: $color-primary;
 }
 
 canvas {
-  font-family: 'Audiowide', 'Verdana';
   border: 1px solid #d3d3d3;
   background-color: #bbbbbb;
   cursor: pointer;
   @include media-tablet {
-    cursor: none;
+    cursor: auto;
   }
 }
 
 button {
   width: 150px;
   height: 50px;
-  font-family: 'Audiowide', 'Verdana';
+  font-family: 'Audiowide';
   outline: none;
   cursor: pointer;
   background-color: $color-primary;
   border: 2px solid $color-additional;
   color: $color-additional;
   @include media-tablet {
-    cursor: none;
+    cursor: auto;
   }
   &:hover {
     transform: scale(1.05);

@@ -27,9 +27,12 @@ export class Component {
         ctx.fillText(this.id, this.x + areaSize / size / 3, this.y + areaSize / size - areaSize / size / 2.5);
       }
     } else {
-      ctx.font = `${areaSize / 12}px Audiowide`;
-      ctx.fillStyle = tileColor;
-      ctx.fillText(this.id, this.x + areaSize / 4 / 3, this.y + areaSize / 4 - areaSize / 4 / 2.5);
+      setTimeout(() => {
+        puzzle.clear();
+        ctx.font = `${areaSize / 12}px Audiowide`;
+        ctx.fillStyle = tileColor;
+        ctx.fillText(this.id, this.x + areaSize / 4 / 3, this.y + areaSize / 4 - areaSize / 4 / 2.5);
+      }, 300);
     }
   }
 }

@@ -9,18 +9,22 @@
   @include media-tablet {
     margin: 100px 0 50px;
     flex-direction: row;
-    padding: 0 50px;
     justify-content: space-between;
+    padding: 0 33px;
   }
 
   @include media-mobile {
-    margin: 50px 0 0;
+    margin: 50px 0 10px;
     padding: 0 10px;
+    column-gap: 2px;
   }
 }
 
 .game__wrapper {
   margin: 10px;
+  @include media-mobile {
+    margin: 30px 10px 10px;
+  }
 }
 
 .game-stats {
@@ -32,8 +36,8 @@
   @include media-tablet {
     margin: 10px 0 50px;
     flex-direction: row;
-    padding: 0 50px;
     justify-content: space-between;
+    padding: 0 33px;
   }
   @include media-mobile {
     margin: 20px 0 20px;
@@ -65,5 +69,11 @@
   width: 150px;
   @include media-mobile {
     width: auto;
+  }
+}
+
+.results-button {
+  @include media-mobile {
+    width: 73.5px;
   }
 }

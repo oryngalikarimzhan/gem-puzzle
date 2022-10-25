@@ -46,6 +46,7 @@ let destination;
 let tempDistance;
 let isEnabled = true;
 let isHorizontal = true;
+
 myDB.setItem('bestResults', JSON.stringify([
   { size: 3, results: [] },
   { size: 4, results: [] },
@@ -68,6 +69,7 @@ window.onload = () => {
   document.querySelector('.saved-game-button').onclick = () => continueSavedGame();
   addColorChangeEventHandler();
   addSizeChangeEventHandler();
+  addGameAreaClickStarter();
 };
 
 export function initGame() {
@@ -75,17 +77,19 @@ export function initGame() {
   if (isStarted) {
     prepareTiles();
     defineSpeed();
+    addTilesController();
     puzzle.start(updateGameArea, updateTime);
     document.querySelector('.start').textContent = 'Restart';
   } else {
-    addGameAreaEventHandlers();
+    new Component(0, areaSize / 3.7, areaSize / 2.6, 'START', 0, false, '').update(tileColor, areaSize, size);
   }
 }
 
 function startNewGame() {
   resetStats();
+  new Component(0, areaSize / 5.5, areaSize / 2.6, 'NEW GAME', 0, false, '').update(tileColor, areaSize, size);
   doStarted(true);
-  initGame();
+  setTimeout(initGame, 800);
 }
 
 export function resetStats() {
@@ -97,13 +101,7 @@ export function resetStats() {
   updateTime();
 }
 
-function addGameAreaEventHandlers() {
-  new Component(0, areaSize / 3.7, areaSize / 2.6, 'START', 0, false, '').update(tileColor, areaSize, size);
-  addOnClickGameStarter();
-  addTilesController();
-}
-
-function addOnClickGameStarter() {
+function addGameAreaClickStarter() {
   document.querySelector('canvas').addEventListener('click', (e) => {
     let x = e.offsetX;
     let y = e.offsetY;
@@ -208,7 +206,7 @@ function saveResult() {
   myDB.setItem('bestResults', JSON.stringify(allBestResults));
 }
 
-function addTilesController() {
+export function addTilesController() {
   let canvas = document.querySelector('canvas');
   canvas.addEventListener('mousedown', (e) => {
     if (isEnabled) {
@@ -305,7 +303,7 @@ function dropControl() {
 }
 
 function moveTile() {
-  if (isWin()) {
+  if (isWin() && isStarted) {
     puzzle.stop();
     showCongratulationMessage();
     saveResult();
@@ -426,9 +424,8 @@ export function updateTime() {
 }
 
 export function isWin() {
-  return tiles.every(tile => tile.position === tile.id);
+  return tiles.length !== 0 ? tiles.every(tile => tile.position === tile.id) : false;
 }
-
 export function setTimes(newSeconds, newMinutes, newHours) {
   seconds = newSeconds;
   minutes = newMinutes;
