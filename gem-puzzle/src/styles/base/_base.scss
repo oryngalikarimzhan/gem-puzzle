@@ -10,8 +10,8 @@ body {
 }
 
 canvas {
-  border: 1px solid #d3d3d3;
-  background-color: #bbbbbb;
+  border: 1px solid #ffffff;
+  background-color: #ffffff;
   cursor: pointer;
   @include media-tablet {
     cursor: auto;

@@ -11,7 +11,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable no-plusplus */
 
-import './styles/style.css';
+import './styles/style.scss';
 import { Component } from './js/Component';
 import { Sound } from './js/Sound';
 import { puzzle } from './js/puzzle';
@@ -22,7 +22,7 @@ import {
   addScreenResizeHandler, defineAreaSize
 } from './js/events';
 import { createInitialDom } from './js/elements';
-import moveSound from './assets/audio/change-position.m4a';
+import moveSound from './assets/audio/change-position-0.m4a';
 import winSound from './assets/audio/win-sound.m4a';
 
 export let isStarted = false;

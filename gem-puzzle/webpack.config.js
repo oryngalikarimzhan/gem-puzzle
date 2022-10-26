@@ -1,20 +1,22 @@
 const path = require('path');
+
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
+let mode = 'development';
+if (process.env.NODE_ENV === 'production') mode = 'production';
+
 module.exports = {
-  context: path.resolve(__dirname, 'src'),
-  mode: 'production',
-  entry: './index.js',
+  mode: mode,
+  entry: './src/index.js',
   output: {
     filename: 'bundle.[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
-    clean: true
+    clean: true,
+    assetModuleFilename: 'assets/[name][ext][query]'
   },
-  resolve: {
-    extensions: ['.js']
-  },
+  devtool: 'source-map',
   optimization: {
     splitChunks: {
       chunks: 'all'
@@ -25,7 +27,7 @@ module.exports = {
   },
   plugins: [
     new HTMLWebpackPlugin({
-      template: './index.html'
+      template: './src/index.html'
     }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
@@ -35,16 +37,49 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader']
+        test: /\.html$/i,
+        loader: 'html-loader'
+      },
+      {
+        test: /\.(c|sa|sc)ss$/i,
+        use: [
+          (mode === 'development') ? 'style-loader' : MiniCssExtractPlugin.loader, 
+          'css-loader',
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: [
+                  [
+                    "postcss-preset-env",
+                    {
+                      // Options
+                    },
+                  ],
+                ],
+              },
+            },
+          },
+          'sass-loader'
+        ]
       },
       {
         test: /\.m4a$/,
-        loader: 'file-loader'
+        type: 'asset/resource'
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
         type: 'asset/resource'
+      },
+      {
+        test: /\.m?js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
       }
     ]
   }
