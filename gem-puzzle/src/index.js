@@ -1,25 +1,22 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-use-before-define */
-/* eslint-disable no-lonely-if */
-/* eslint-disable radix */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable max-len */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-loop-func */
-/* eslint-disable no-shadow */
-/* eslint-disable new-cap */
-/* eslint-disable no-plusplus */
-
 import './styles/style.scss';
 import { Component } from './js/Component';
 import { Sound } from './js/Sound';
 import { puzzle } from './js/puzzle';
 import {
-  tileColor, areaSize, size, soundIsOn,
-  addColorChangeEventHandler, addSizeChangeEventHandler, continueSavedGame,
-  showResultsList, saveCurrentGame, toggleSound, removeScreenOverlay, showConfigMenu,
-  addScreenResizeHandler, defineAreaSize
+  tileColor,
+  areaSize,
+  size,
+  soundIsOn,
+  addColorChangeEventHandler,
+  addSizeChangeEventHandler,
+  continueSavedGame,
+  showResultsList,
+  saveCurrentGame,
+  toggleSound,
+  removeScreenOverlay,
+  showConfigMenu,
+  addScreenResizeHandler,
+  defineAreaSize,
 } from './js/events';
 import { createInitialDom } from './js/elements';
 import moveSound from './assets/audio/change-position-0.m4a';
@@ -47,14 +44,17 @@ let tempDistance;
 let isEnabled = true;
 let isHorizontal = true;
 
-myDB.setItem('bestResults', JSON.stringify([
-  { size: 3, results: [] },
-  { size: 4, results: [] },
-  { size: 5, results: [] },
-  { size: 6, results: [] },
-  { size: 7, results: [] },
-  { size: 8, results: [] }
-]));
+myDB.setItem(
+  'bestResults',
+  JSON.stringify([
+    { size: 3, results: [] },
+    { size: 4, results: [] },
+    { size: 5, results: [] },
+    { size: 6, results: [] },
+    { size: 7, results: [] },
+    { size: 8, results: [] },
+  ])
+);
 
 window.onload = () => {
   createInitialDom();
@@ -105,10 +105,7 @@ function addGameAreaClickStarter() {
   document.querySelector('canvas').addEventListener('click', (e) => {
     let x = e.offsetX;
     let y = e.offsetY;
-    if (!isStarted && x >= areaSize / 3
-        && x <= areaSize * 0.7
-        && y >= areaSize / 2.2
-        && y <= areaSize / 1.8) {
+    if (!isStarted && x >= areaSize / 3 && x <= areaSize * 0.7 && y >= areaSize / 2.2 && y <= areaSize / 1.8) {
       setTimeout(startNewGame, 100);
     }
   });
@@ -122,12 +119,42 @@ function prepareTiles() {
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
       if (i !== size - 1 || j !== size - 1) {
-        if ((j === size - 1 && i === size - 2)) {
-          tiles.push(new Component(areaSize / size - 2, distance * j + 1, distance * i + 1, ids[index], positions[index] = 1 + index++, true, 'down'));
+        if (j === size - 1 && i === size - 2) {
+          tiles.push(
+            new Component(
+              areaSize / size - 2,
+              distance * j + 1,
+              distance * i + 1,
+              ids[index],
+              (positions[index] = 1 + index++),
+              true,
+              'down'
+            )
+          );
         } else if (j === size - 2 && i === size - 1) {
-          tiles.push(new Component(areaSize / size - 2, distance * j + 1, distance * i + 1, ids[index], positions[index] = 1 + index++, true, 'right'));
+          tiles.push(
+            new Component(
+              areaSize / size - 2,
+              distance * j + 1,
+              distance * i + 1,
+              ids[index],
+              (positions[index] = 1 + index++),
+              true,
+              'right'
+            )
+          );
         } else {
-          tiles.push(new Component(areaSize / size - 2, distance * j + 1, distance * i + 1, ids[index], positions[index] = 1 + index++, false, ''));
+          tiles.push(
+            new Component(
+              areaSize / size - 2,
+              distance * j + 1,
+              distance * i + 1,
+              ids[index],
+              (positions[index] = 1 + index++),
+              false,
+              ''
+            )
+          );
         }
       }
     }
@@ -136,14 +163,15 @@ function prepareTiles() {
 
 function getShuffledNumbers() {
   let ids = Array.from({ length: size * size - 1 }, (_, i) => i + 1);
-  while (true) {
+  let isSolvable = false;
+  while (!isSolvable) {
     ids = ids.sort(() => Math.random() - 0.5);
-    if (isSolvable(ids)) break;
+    isSolvable = canSolve(ids);
   }
   return ids;
 }
 
-function isSolvable(ids) {
+function canSolve(ids) {
   let inversionCounter = 0;
   for (let i = 0; i < ids.length - 1; i++) {
     for (let j = i + 1; j < ids.length; j++) {
@@ -172,17 +200,19 @@ function showCongratulationMessage() {
   let overlay = document.querySelector('.overlay');
   if (soundIsOn) new Sound(winSound).play();
   overlay.classList.remove('hidden');
-  Array.from(overlay.children).forEach(child => {
+  Array.from(overlay.children).forEach((child) => {
     if (!child.classList.contains('hidden')) child.classList.add('hidden');
   });
   document.querySelector('.overlay__button').classList.remove('hidden');
   document.querySelector('.overlay__message').classList.remove('hidden');
-  document.querySelector('.congratulation-message').textContent = `Good Job! You solved the ${size}X${size} puzzle in ${timeText} and ${moves} moves!`;
+  document.querySelector(
+    '.congratulation-message'
+  ).textContent = `Good Job! You solved the ${size}X${size} puzzle in ${timeText} and ${moves} moves!`;
 }
 
 function saveResult() {
   let allBestResults = JSON.parse(myDB.getItem('bestResults'));
-  let bestResultsBySize = allBestResults.find(obj => obj.size === size);
+  let bestResultsBySize = allBestResults.find((obj) => obj.size === size);
   let results = bestResultsBySize.results;
   let currentDate = new Date();
   let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(currentDate).slice(2);
@@ -213,10 +243,12 @@ export function addTilesController() {
       puzzle.x = e.offsetX;
       puzzle.y = e.offsetY;
       for (let i = 0; i < tiles.length; i++) {
-        if (tiles[i].x <= puzzle.x
-            && tiles[i].x + distance - 2 >= puzzle.x
-            && tiles[i].y <= puzzle.y
-            && tiles[i].y + distance - 2 >= puzzle.y) {
+        if (
+          tiles[i].x <= puzzle.x &&
+          tiles[i].x + distance - 2 >= puzzle.x &&
+          tiles[i].y <= puzzle.y &&
+          tiles[i].y + distance - 2 >= puzzle.y
+        ) {
           if (tiles[i].moveable) {
             isEnabled = false;
             if (soundIsOn) mySound.play();
@@ -312,27 +344,27 @@ function moveTile() {
   if (isEnding) {
     if (currentTile.direction === 'right') {
       if (toForward) {
-        tempDistance < speed ? currentTile.x += tempDistance : currentTile.x += speed;
+        tempDistance < speed ? (currentTile.x += tempDistance) : (currentTile.x += speed);
       } else {
-        tempDistance < speed ? currentTile.x -= tempDistance : currentTile.x -= speed;
+        tempDistance < speed ? (currentTile.x -= tempDistance) : (currentTile.x -= speed);
       }
     } else if (currentTile.direction === 'left') {
       if (toForward) {
-        tempDistance < speed ? currentTile.x -= tempDistance : currentTile.x -= speed;
+        tempDistance < speed ? (currentTile.x -= tempDistance) : (currentTile.x -= speed);
       } else {
-        tempDistance < speed ? currentTile.x += tempDistance : currentTile.x += speed;
+        tempDistance < speed ? (currentTile.x += tempDistance) : (currentTile.x += speed);
       }
     } else if (currentTile.direction === 'down') {
       if (toForward) {
-        tempDistance < speed ? currentTile.y += tempDistance : currentTile.y += speed;
+        tempDistance < speed ? (currentTile.y += tempDistance) : (currentTile.y += speed);
       } else {
-        tempDistance < speed ? currentTile.y -= tempDistance : currentTile.y -= speed;
+        tempDistance < speed ? (currentTile.y -= tempDistance) : (currentTile.y -= speed);
       }
     } else if (currentTile.direction === 'up') {
       if (toForward) {
-        tempDistance < speed ? currentTile.y -= tempDistance : currentTile.y -= speed;
+        tempDistance < speed ? (currentTile.y -= tempDistance) : (currentTile.y -= speed);
       } else {
-        tempDistance < speed ? currentTile.y += tempDistance : currentTile.y += speed;
+        tempDistance < speed ? (currentTile.y += tempDistance) : (currentTile.y += speed);
       }
     }
 
@@ -342,13 +374,13 @@ function moveTile() {
       endMove();
     }
   }
-  tiles.forEach(tile => tile.update(tileColor, areaSize, size));
+  tiles.forEach((tile) => tile.update(tileColor, areaSize, size));
 }
 
 function endMove() {
   if (positionChanged) {
     let tempDirection = currentTile.direction;
-    tiles.forEach(tile => {
+    tiles.forEach((tile) => {
       tile.moveable = false;
       tile.direction = '';
     });
@@ -385,7 +417,7 @@ function updateOwnPosition() {
 }
 
 function updateNeighbors() {
-  tiles.forEach(tile => {
+  tiles.forEach((tile) => {
     if (tile.position === currentTile.position - size) {
       tile.moveable = true;
       tile.direction = 'down';
@@ -418,13 +450,15 @@ export function updateTime() {
       hours++;
     }
   }
-  timeText = `${('' + hours).length === 1 ? '0' + hours : hours}:${('' + minutes).length === 1 ? '0' + minutes : minutes}:${('' + seconds).length === 1 ? '0' + seconds : seconds}`;
+  timeText = `${('' + hours).length === 1 ? '0' + hours : hours}:${
+    ('' + minutes).length === 1 ? '0' + minutes : minutes
+  }:${('' + seconds).length === 1 ? '0' + seconds : seconds}`;
   document.querySelector('.time').textContent = `Time: ${timeText}`;
   seconds++;
 }
 
 export function isWin() {
-  return tiles.length !== 0 ? tiles.every(tile => tile.position === tile.id) : false;
+  return tiles.length !== 0 ? tiles.every((tile) => tile.position === tile.id) : false;
 }
 export function setTimes(newSeconds, newMinutes, newHours) {
   seconds = newSeconds;

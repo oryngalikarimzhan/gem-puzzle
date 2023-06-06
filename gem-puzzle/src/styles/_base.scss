@@ -1,0 +1,108 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 10px;
+}
+
+body {
+  font-family: 'Audiowide', sans-serif;
+  font-size: 1.6rem;
+  color: $color-accent;
+  background: $color-primary;
+}
+
+p,
+span,
+button {
+  user-select: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.button {
+  font: inherit;
+  width: 150px;
+  height: 50px;
+  background-color: $color-primary;
+  color: $color-accent;
+  outline: none;
+  border: 2px solid $color-accent;
+  cursor: pointer;
+  transition: transform 0.1s linear;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @include touch-screen {
+    cursor: auto;
+  }
+}
+
+// Close Button
+.close-button {
+  border: none;
+  outline: none;
+  position: relative;
+  background-color: transparent;
+  height: 28px;
+  width: 28px;
+  cursor: pointer;
+  user-select: none;
+
+  @include mobile {
+    height: 14px;
+    width: 14px;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    height: 5px;
+    border-radius: 5px;
+    background-color: $color-accent;
+    width: 37.5px;
+    top: -1px;
+    left: 2.5px;
+    transform-origin: top left;
+    transform: rotate(45deg);
+
+    @include mobile {
+      width: 19px;
+      top: -0.5px;
+      left: 1px;
+      height: 2px;
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    height: 5px;
+    color: $color-accent;
+    border-radius: 5px;
+    background-color: $color-accent;
+    width: 37.5px;
+    top: -1px;
+    right: 2.5px;
+    transform-origin: top right;
+    transform: rotate(-45deg);
+
+    @include mobile {
+      width: 19px;
+      top: -0.5px;
+      right: 1px;
+      height: 2px;
+    }
+  }
+}

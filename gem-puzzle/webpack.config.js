@@ -1,75 +1,64 @@
 const path = require('path');
 
 const HTMLWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 let mode = 'development';
 if (process.env.NODE_ENV === 'production') mode = 'production';
 
 module.exports = {
   mode: mode,
-  entry: './src/index.js',
+  entry: './src/main.js',
   output: {
     filename: 'bundle.[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
-    assetModuleFilename: 'assets/[name][ext][query]'
+    assetModuleFilename: 'assets/[name][ext][query]',
   },
   devtool: 'source-map',
   optimization: {
     splitChunks: {
-      chunks: 'all'
-    }
+      chunks: 'all',
+    },
   },
   devServer: {
-    port: 4200
+    port: 4200,
   },
   plugins: [
     new HTMLWebpackPlugin({
-      template: './src/index.html'
+      template: './src/index.html',
     }),
-    new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin({
-      filename: 'style.[contenthash].css'
-    })
+    new ESLintPlugin({ extensions: 'js' }),
   ],
   module: {
     rules: [
       {
         test: /\.html$/i,
-        loader: 'html-loader'
+        loader: 'html-loader',
       },
       {
         test: /\.(c|sa|sc)ss$/i,
         use: [
-          (mode === 'development') ? 'style-loader' : MiniCssExtractPlugin.loader, 
+          'style-loader',
           'css-loader',
           {
-            loader: "postcss-loader",
+            loader: 'postcss-loader',
             options: {
               postcssOptions: {
-                plugins: [
-                  [
-                    "postcss-preset-env",
-                    {
-                      // Options
-                    },
-                  ],
-                ],
+                plugins: [['postcss-preset-env']],
               },
             },
           },
-          'sass-loader'
-        ]
+          'sass-loader',
+        ],
       },
       {
         test: /\.m4a$/,
-        type: 'asset/resource'
+        type: 'asset/resource',
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
-        type: 'asset/resource'
+        type: 'asset/resource',
       },
       {
         test: /\.m?js$/,
@@ -77,10 +66,10 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env']
-          }
-        }
-      }
-    ]
-  }
+            presets: ['@babel/preset-env'],
+          },
+        },
+      },
+    ],
+  },
 };

@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { puzzle } from './puzzle';
 
 export class Component {

@@ -1,15 +1,18 @@
-@import "abstracts/constants";
-@import "abstracts/mixins";
+@font-face {
+  font-family: 'Audiowide';
+  src: url('../assets/fonts/Audiowide-Regular.woff2') format('woff2');
+}
 
-@import "base/fonts";
-@import "base/reset";
-@import "base/base";
-@import "base/button";
-@import "base/overlay";
+@import './mixins';
+@import './constants';
 
-@import "layouts/wrapper";
+@import './base';
+@import './app';
 
-@import "components/popup";
-@import "components/game";
+// @import 'base/button';
+// @import 'base/overlay';
 
+// @import 'layouts/wrapper';
 
+// @import 'components/popup';
+// @import 'components/game';

@@ -4,9 +4,27 @@
 /* eslint-disable radix */
 
 import {
-  isWin, isStarted, distance, myDB, tiles, moves, seconds, minutes, hours,
-  resetStats, initGame, updateTime, updateMoves, defineSpeed, updateGameArea,
-  setMoves, setTimes, setDistance, addTile, doStarted, addTilesController
+  isWin,
+  isStarted,
+  distance,
+  myDB,
+  tiles,
+  moves,
+  seconds,
+  minutes,
+  hours,
+  resetStats,
+  initGame,
+  updateTime,
+  updateMoves,
+  defineSpeed,
+  updateGameArea,
+  setMoves,
+  setTimes,
+  setDistance,
+  addTile,
+  doStarted,
+  addTilesController,
 } from '../index';
 import { Component } from './Component';
 import { puzzle } from './puzzle';
@@ -19,7 +37,7 @@ export let soundIsOn = true;
 let screenWidth = window.innerWidth;
 
 export function addColorChangeEventHandler() {
-  document.querySelectorAll('.color').forEach(elem => {
+  document.querySelectorAll('.color').forEach((elem) => {
     elem.addEventListener('click', () => {
       tileColor = getComputedStyle(elem).getPropertyValue('background-color');
       document.querySelector('.current-color').classList.remove('current-color');
@@ -29,7 +47,7 @@ export function addColorChangeEventHandler() {
 }
 
 export function addSizeChangeEventHandler() {
-  document.querySelectorAll('.size').forEach(elem => {
+  document.querySelectorAll('.size').forEach((elem) => {
     elem.addEventListener('click', () => {
       size = parseInt(elem.textContent);
       document.querySelector('.current-size').classList.remove('current-size');
@@ -51,24 +69,31 @@ export function continueSavedGame() {
     size = savedGame.size;
     if (areaSize === savedGame.areaSize) {
       setDistance(savedGame.areaSize / size);
-      savedGame.tiles.forEach(tile => {
+      savedGame.tiles.forEach((tile) => {
         addTile(new Component(tile.width, tile.x, tile.y, tile.id, tile.position, tile.moveable, tile.direction));
       });
     } else {
       setDistance(areaSize / size);
-      savedGame.tiles.forEach(tile => {
-        addTile(new Component(
-          distance - 2,
-          distance * parseInt(tile.x / (savedGame.areaSize / savedGame.size)) + 1,
-          distance * parseInt(tile.y / (savedGame.areaSize / savedGame.size)) + 1,
-          tile.id, tile.position, tile.moveable, tile.direction
-        ));
+      savedGame.tiles.forEach((tile) => {
+        addTile(
+          new Component(
+            distance - 2,
+            distance * parseInt(tile.x / (savedGame.areaSize / savedGame.size)) + 1,
+            distance * parseInt(tile.y / (savedGame.areaSize / savedGame.size)) + 1,
+            tile.id,
+            tile.position,
+            tile.moveable,
+            tile.direction
+          )
+        );
       });
     }
 
     document.querySelector('.current-size').classList.remove('current-size');
-    Array.from(document.querySelectorAll('.size')).find(el => parseInt(el.textContent) === size).classList.add('current-size');
-    
+    Array.from(document.querySelectorAll('.size'))
+      .find((el) => parseInt(el.textContent) === size)
+      .classList.add('current-size');
+
     if (!isStarted) {
       doStarted(true);
       addTilesController();
@@ -88,20 +113,20 @@ export function showResultsList() {
   puzzle.pause();
   document.querySelector('.overlay').classList.remove('hidden');
 
-  Array.from(document.querySelector('.overlay').children).forEach(child => {
+  Array.from(document.querySelector('.overlay').children).forEach((child) => {
     if (!child.classList.contains('hidden')) child.classList.add('hidden');
   });
   document.querySelector('.overlay__button').classList.remove('hidden');
   document.querySelector('.results').classList.remove('hidden');
 
-  let results = JSON.parse(myDB.getItem('bestResults')).find(obj => obj.size === size).results;
+  let results = JSON.parse(myDB.getItem('bestResults')).find((obj) => obj.size === size).results;
   let resultMoves = document.querySelectorAll('.result-moves');
   let resultTimes = document.querySelectorAll('.result-time');
   let resultDates = document.querySelectorAll('.result-date');
 
-  resultMoves.forEach(el => el.textContent = '--');
-  resultTimes.forEach(el => el.textContent = '--:--:--');
-  resultDates.forEach(el => el.textContent = '--.--.-- --:--');
+  resultMoves.forEach((el) => (el.textContent = '--'));
+  resultTimes.forEach((el) => (el.textContent = '--:--:--'));
+  resultDates.forEach((el) => (el.textContent = '--.--.-- --:--'));
 
   for (let i = 0; i < results.length; i++) {
     resultMoves[i].textContent = results[i].moves;
@@ -112,9 +137,18 @@ export function showResultsList() {
 
 export function saveCurrentGame() {
   if (!isWin() && isStarted) {
-    myDB.setItem('savedGame', JSON.stringify({ 
-      tiles, moves, seconds, minutes, hours, areaSize, size
-    }));
+    myDB.setItem(
+      'savedGame',
+      JSON.stringify({
+        tiles,
+        moves,
+        seconds,
+        minutes,
+        hours,
+        areaSize,
+        size,
+      })
+    );
   }
 }
 
@@ -136,7 +170,7 @@ export function removeScreenOverlay() {
 export function showConfigMenu() {
   puzzle.pause();
   document.querySelector('.overlay').classList.remove('hidden');
-  Array.from(document.querySelector('.overlay').children).forEach(child => {
+  Array.from(document.querySelector('.overlay').children).forEach((child) => {
     if (!child.classList.contains('hidden')) child.classList.add('hidden');
   });
   document.querySelector('.overlay__button').classList.remove('hidden');
