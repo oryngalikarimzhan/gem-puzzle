@@ -10,27 +10,10 @@ import { addAppListeners } from './appListeners';
 const font = new FontFace('Audiowide', `url(${Audiowide})`);
 const moveSound = createSound(moveSoundSrc);
 const winSound = createSound(winSoundSrc);
-const storage = window.localStorage;
 
-storage.setItem(
-  'best-results',
-  JSON.stringify([
-    { size: 3, results: [] },
-    { size: 4, results: [] },
-    { size: 5, results: [] },
-    { size: 6, results: [] },
-    { size: 7, results: [] },
-    { size: 8, results: [] },
-  ])
-);
-
-const initialConfigs = {
-  color: 'chocolate',
+const initialStates = {
+  color: '#d2691e',
   size: 3,
-  sounds: {
-    moveSound,
-    winSound,
-  },
 };
 
 export const start = () => {
@@ -38,11 +21,11 @@ export const start = () => {
     renderApp();
 
     font.load().then(() => {
-      const puzzle = new Puzzle(initialConfigs);
-      puzzle.build();
+      const puzzle = new Puzzle(initialStates, {
+        moveSound,
+        winSound,
+      });
       addAppListeners(puzzle);
-      puzzle.prepare();
-      puzzle.start();
     });
   };
 };

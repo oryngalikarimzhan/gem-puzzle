@@ -34,7 +34,7 @@ const renderGameStats = () => {
   return `
     <section class="game-stats">
       <div class="current-stats">
-        <p class="moves-">Moves: <span>0</span></p>
+        <p class="moves">Moves: <span>0</span></p>
         <p class="time">Time: <span>00:00:00</span></p>
       </div>
       <button class="button results-button">Results</button>
@@ -53,77 +53,87 @@ const renderOverlay = () => {
   `;
 };
 
-// const renderResults = () => {
-//   return `
-//     <section class="results">
-//       <h2 class="results-title">Top 10 Results</h2>
-//       <div class="results-list">
-//         <div class="results-list-heading">
-//           <div class="palace__heading">Place</div>
-//           <div class="moves__heading">Moves</div>
-//           <div class="times__heading">Time</div>
-//           <div class="dates__heading">Date</div>
-//         </div>
-//         <div class="results-list">
-
-//         </div>
-//       </div>
-//     </section>
-//   `;
-// };
-
-// const renderResult = (place, result) => {
-//   return `
-//     <div class="result-place">${place}</div>
-//     <div class="result-moves">${result.moves || '--'}</div>
-//     <div class="result-time">${result.time || '--:--:--'}</div>
-//     <div class="result-date">${result.date || '--.--.-- --:--'}</div>
-//   `;
-// };
-
-const colors = {
-  black: '#000000',
-  red: '#4f0000',
-  blue: '#000032',
-  green: '#001f00',
-  gray: '#252525',
-  chocolate: 'chocolate',
+export const renderResults = (results) => {
+  return `
+    <section class="results">
+      <h2 class="results-title">Top 10 Results</h2>
+      <div class="results-content">
+        <div class="results-list-heading">
+          <div class="places__heading">#</div>
+          <div class="moves__heading">Moves</div>
+          <div class="times__heading">Time</div>
+          <div class="dates__heading">Date</div>
+        </div>
+        <div class="results-list">
+          ${results.map((rsl, i) => renderResult(i + 1, rsl)).join('')}
+        </div>
+      </div>
+    </section>
+  `;
 };
 
-export const renderConfigs = (isSoundOn = true) => {
+const renderResult = (place, { moves, time, date }) => {
+  return `
+    <div class="result">
+      <div class="result-place">${place}</div>
+      <div class="result-moves">${moves}</div>
+      <div class="result-time">${time}</div>
+      <div class="result-date">${date}</div>
+    </div>
+  `;
+};
+
+// const colors = {
+//   black: '#000000',
+//   red: '#4f0000',
+//   blue: '#000032',
+//   green: '#001f00',
+//   gray: '#252525',
+//   chocolate: 'chocolate',
+// };
+
+export const renderConfigs = (soundStateText, puzzleColor, currentSize, backgroundColor, textColor) => {
   return `
     <section class="configs">
       <div class="config sound-config">
         <h3>Sound</h3>
-        <div class="sound-state">${isSoundOn ? 'On' : 'Off'}</div>
-      </div>
-      <div class="config theme-config">
-        <h3>Theme</h3>
-        <div class="sound-state">${isSoundOn ? 'Dark' : 'Light'}</div>
+        <div class="sound-state">${soundStateText}</div>
       </div>
       <div class="config color-config">
-        <h3>Color</h3>
-        <select class="size-select">
-          ${Object.keys(colors).map((k) => renderOption(k, k))}
-        </select>
+        <h3>Background color</h3>
+        <input type="color" value="${backgroundColor}" class="color-input"/>
+      </div>
+      <div class="config color-config">
+        <h3>Puzzle color</h3>
+        <input type="color" value="${puzzleColor}" class="color-input"/>
+      </div>
+      <div class="config color-config">
+        <h3>Text color</h3>
+        <input type="color" value="${textColor}" class="color-input"/>
+      </div>
+      <div class="config color-config">
+        <h3>Buttons color</h3>
+        <input type="color" class="color-input"/>
       </div>
       <div class="config sizes-config">
-        <h3>Size (3-10)</h3>
+        <h3>Size</h3>
         <select class="size-select">
-          ${Array.from({ length: 8 }, (_, i) => i + 3).map((v) => renderOption(v, `${v}X${v}`))}
+          ${Array.from({ length: 8 }, (_, i) => i + 3)
+            .map((size) => renderOption(size, `${size}X${size}`, currentSize == size))
+            .join('')}
         </select>
       </div>
     </section>`;
 };
 
-const renderOption = (value, text) => {
+const renderOption = (value, text, isSelected) => {
   return `
-    <option value="${value}">${text}</option>
+    <option ${isSelected ? 'selected' : ''} value="${value}">${text}</option>
   `;
 };
 
-// const renderMessage = (message) => {
-//   return `
-//     <p class="congratulation-message">${message}</p>
-//   `;
-// };
+export const renderMessage = (message) => {
+  return `
+    <p class="popup-message">${message}</p>
+  `;
+};
