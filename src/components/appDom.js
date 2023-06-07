@@ -25,7 +25,7 @@ const renderControlPanel = () => {
 const renderGameField = () => {
   return `
     <section class="game-field">
-      <canvas class="puzzle"></canvas>
+      <canvas class="puzzle" width="750" height="750"></canvas>
     </section>
   `;
 };
