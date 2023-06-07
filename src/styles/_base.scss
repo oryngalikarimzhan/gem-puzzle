@@ -4,6 +4,7 @@
   padding: 0;
   user-select: none;
 }
+
 :root {
   --color-primary: #5f9ea0;
   --color-primary-rgb: 95, 158, 160;
@@ -69,7 +70,6 @@ button {
   }
 }
 
-// Close Button
 .close-button {
   border: none;
   outline: none;
@@ -131,25 +131,6 @@ button {
     &::before {
       box-shadow: 0 0 20px 1px rgba(var(--color-accent-rgb), 0.5);
     }
-  }
-}
-
-input[type='color'] {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  height: 35px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-
-  &::-webkit-color-swatch {
-    border-radius: 10px;
-    border: 2px solid var(--color-accent);
-  }
-  &::-moz-color-swatch {
-    border-radius: 10px;
-    border: 2px solid var(--color-accent);
   }
 }
 
