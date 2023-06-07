@@ -18,8 +18,8 @@ export class PuzzleController {
     this.states = states;
     this.moveSound = moveSound;
     this.winSound = winSound;
-    this.moveSound.load();
-    this.winSound.load();
+    this.moveSound.reload();
+    this.winSound.reload();
 
     this.handleControlOnReSize();
 
@@ -30,8 +30,8 @@ export class PuzzleController {
   }
 
   update = () => {
-    this.winSound.load();
-    this.moveSound.load();
+    this.winSound.reload();
+    this.moveSound.reload();
     this.defineNewMoveableTiles();
     this.updateCurrentTilePosition();
     updateMovesText(this.states.moves);
@@ -247,7 +247,6 @@ export class PuzzleController {
   };
 
   resetMoveProgress = () => {
-    this.moveSound.load();
     this.states.currentTile = null;
     this.distanceToMove = null;
     this.mouseX = null;
@@ -255,6 +254,7 @@ export class PuzzleController {
     this.isToForward = true;
     this.isMoveEnding = false;
     this.isEnabled = true;
+    this.moveSound.reload();
   };
 
   defineNewMoveableTiles = () => {

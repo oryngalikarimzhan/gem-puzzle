@@ -3,14 +3,15 @@ import moveSoundSrc from '../assets/audio/move-sound-1.mp4';
 import winSoundSrc from '../assets/audio/win-sound.m4a';
 
 import { Puzzle } from './Puzzle';
-import { createSound, getFromLS } from './utils';
+import { Sound } from './Sound';
+import { getFromLS } from './utils';
 import { renderApp } from './appDom';
 import { setTheme } from './domActions';
 import { addAppListeners } from './appListeners';
 
 const font = new FontFace('Audiowide', `url(${Audiowide})`);
-const moveSound = createSound(moveSoundSrc);
-const winSound = createSound(winSoundSrc);
+const moveSound = new Sound(moveSoundSrc);
+const winSound = new Sound(winSoundSrc);
 
 const savedTheme = getFromLS('theme', '{}');
 
