@@ -23,7 +23,7 @@ export class Puzzle {
   }
 
   prepare = () => {
-    const { size, areaSize } = this.states;
+    const { size, areaSize, textColor } = this.states;
     const ids = getShuffledNumbers(size);
     const distance = areaSize / size;
     const tileSize = distance - 2;
@@ -45,9 +45,9 @@ export class Puzzle {
         const position = index + 1;
 
         if (id !== 0) {
-          this.states.tiles.push(new Tile(tileSize, x, y, id, position));
+          this.states.tiles.push(new Tile({ tileSize, x, y, id, position, textColor }));
         } else {
-          this.states.currentTile = new Tile(tileSize, x, y, id, position);
+          this.states.currentTile = new Tile({ tileSize, x, y, id, position, textColor });
         }
 
         index++;
@@ -59,7 +59,7 @@ export class Puzzle {
     this.ctx.font = `100px Audiowide`;
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
-    this.ctx.fillStyle = 'black';
+    this.ctx.fillStyle = '#2f4f4f';
     this.ctx.fillText('Start', this.states.areaSize / 2, this.states.areaSize / 2);
 
     this.controller.update();
@@ -85,7 +85,6 @@ export class Puzzle {
   };
 
   update = () => {
-    // console.log('a');
     const { areaSize, color, tiles } = this.states;
 
     this.ctx.clearRect(0, 0, areaSize, areaSize);

@@ -30,7 +30,6 @@ export class PuzzleController {
   }
 
   update = () => {
-    this.handleControlOnReSize();
     this.winSound.load();
     this.moveSound.load();
     this.defineNewMoveableTiles();

@@ -1,4 +1,14 @@
-import { showResultsList, showConfigs, hideOverlay, changeStartButtonText, toggleSound } from './domActions';
+import {
+  showResultsList,
+  showConfigs,
+  hideOverlay,
+  changeStartButtonText,
+  toggleSound,
+  toggleTheme,
+  updateMovesText,
+} from './domActions';
+import { Tile } from './Tile';
+import { getFromLS, saveToLS } from './utils';
 
 export const addAppListeners = (puzzle) => {
   addCanvasClickHandler(puzzle);
@@ -10,6 +20,7 @@ export const addAppListeners = (puzzle) => {
   addCloseButtonClickHandler(puzzle);
   addSoundStateButtonClickHandler(puzzle);
   addSizeChangeHandler(puzzle);
+  addThemeStateButtonClickHandler(puzzle);
 };
 
 const addCanvasClickHandler = (puzzle) => {
@@ -32,19 +43,33 @@ const addStartButtonClickHandler = (puzzle) => {
   });
 };
 
-const addSaveButtonClickHandler = (/* puzzle */) => {
+const addSaveButtonClickHandler = (puzzle) => {
   document.addEventListener('click', (e) => {
     if (e.target.closest('.save-button')) {
-      console.log('save');
+      if (puzzle.states.isStarted) saveToLS(puzzle.states, 'saved-game');
     }
   });
 };
 
-const addRestoreButtonClickHandler = (/* puzzle */) => {
-  // puzzle.start();
+const addRestoreButtonClickHandler = (puzzle) => {
   document.addEventListener('click', (e) => {
     if (e.target.closest('.restore-button')) {
-      console.log('restore');
+      const savedStates = getFromLS('saved-game', '{}');
+      if (savedStates) {
+        puzzle.pause();
+        const tiles = savedStates.tiles.map((tile) => new Tile(tile));
+        puzzle.states.tiles = tiles;
+        puzzle.states.size = savedStates.size;
+        puzzle.states.isStarted = savedStates.isStarted;
+        puzzle.states.timeDifference = savedStates.timeDifference;
+        puzzle.states.areaSize = savedStates.areaSize;
+        puzzle.states.distance = savedStates.distance;
+        puzzle.states.tileSize = savedStates.tileSize;
+        puzzle.states.moves = savedStates.moves;
+        puzzle.states.distancePerFrame = savedStates.distancePerFrame;
+        updateMovesText(savedStates.moves);
+        puzzle.continue();
+      }
     }
   });
 };
@@ -72,7 +97,6 @@ const addCloseButtonClickHandler = (puzzle) => {
     if (e.target.closest('.close-button')) {
       const { isStarted, isPaused } = puzzle.states;
       if (isStarted && isPaused) puzzle.continue();
-      // else if (!isStarted && !isPaused) puzzle.start();
       hideOverlay();
     }
   });
@@ -95,7 +119,17 @@ const addSizeChangeHandler = (puzzle) => {
       puzzle.prepare();
     }
   });
-  // size = parseInt(elem.textContent);
-  // document.querySelector('.current-size').classList.remove('current-size');
-  // elem.classList.add('current-size');
+};
+
+const addThemeStateButtonClickHandler = (puzzle) => {
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.theme-state')) {
+      const theme = toggleTheme(puzzle.states);
+      const isDarkTheme = theme === 'dark';
+      puzzle.states.color = isDarkTheme ? '#a0522d' : '#d2691e';
+      puzzle.states.textColor = isDarkTheme ? '#b1cab1' : '#f0fff0';
+      puzzle.states.tiles.forEach((tile) => (tile.textColor = puzzle.states.textColor));
+      saveToLS({ theme, color: puzzle.states.color, textColor: puzzle.states.textColor }, 'theme');
+    }
+  });
 };

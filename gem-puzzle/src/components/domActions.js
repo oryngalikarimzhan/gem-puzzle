@@ -3,7 +3,7 @@ import { renderResults, renderMessage, renderConfigs } from './appDom';
 export const showCongratulationMessage = (size, time, moves) => {
   showOverlay();
   document.querySelector('.popup-content').innerHTML = renderMessage(
-    `Good Job!<br> You result for ${size}X${size} size puzzle <br>Time: ${time}<br>Moves: ${moves} moves!`
+    `Good Job!<br> You result in ${size}X${size} puzzle <br>Time: ${time}<br>Moves: ${moves} moves!`
   );
 };
 
@@ -42,12 +42,12 @@ export const showResultsList = (size) => {
 
 export const showConfigs = (states) => {
   showOverlay();
-  const { isSoundOn, color, size } = states;
+  const { isSoundOn, theme, size } = states;
   const soundStateText = defineSoundStateText(isSoundOn);
-  document.querySelector('.popup-content').innerHTML = renderConfigs(soundStateText, color, size);
+  document.querySelector('.popup-content').innerHTML = renderConfigs(soundStateText, theme, size);
 };
 
-const defineSoundStateText = (isSoundOn) => (isSoundOn ? 'On' : 'Off');
+const defineSoundStateText = (isSoundOn) => (isSoundOn ? 'on' : 'off');
 
 const showOverlay = () => document.querySelector('.overlay').classList.remove('hidden');
 
@@ -57,3 +57,12 @@ export const toggleSound = (states) => {
   states.isSoundOn = !states.isSoundOn;
   document.querySelector('.sound-state').innerHTML = defineSoundStateText(states.isSoundOn);
 };
+
+export const toggleTheme = (states) => {
+  states.theme = states.theme === 'dark' ? 'light' : 'dark';
+  document.querySelector('.theme-state').innerHTML = states.theme;
+  setTheme(states.theme);
+  return states.theme;
+};
+
+export const setTheme = (theme) => document.documentElement.setAttribute('data-theme', theme);

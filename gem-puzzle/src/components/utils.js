@@ -101,3 +101,11 @@ export const saveResults = (size, moves, time) => {
 
   window.localStorage.setItem('best-results', JSON.stringify(allResults));
 };
+
+export const saveToLS = (data, key) => {
+  window.localStorage.setItem(key, JSON.stringify(data));
+};
+
+export const getFromLS = (key, placeholder) => {
+  return JSON.parse(window.localStorage.getItem(key) || placeholder);
+};

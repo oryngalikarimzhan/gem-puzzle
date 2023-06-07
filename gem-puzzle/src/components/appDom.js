@@ -83,37 +83,16 @@ const renderResult = (place, { moves, time, date }) => {
   `;
 };
 
-// const colors = {
-//   black: '#000000',
-//   red: '#4f0000',
-//   blue: '#000032',
-//   green: '#001f00',
-//   gray: '#252525',
-//   chocolate: 'chocolate',
-// };
-
-export const renderConfigs = (soundStateText, puzzleColor, currentSize, backgroundColor, textColor) => {
+export const renderConfigs = (soundStateText, themeStateText, currentSize) => {
   return `
     <section class="configs">
       <div class="config sound-config">
         <h3>Sound</h3>
         <div class="sound-state">${soundStateText}</div>
       </div>
-      <div class="config color-config">
-        <h3>Background color</h3>
-        <input type="color" value="${backgroundColor}" class="color-input"/>
-      </div>
-      <div class="config color-config">
-        <h3>Puzzle color</h3>
-        <input type="color" value="${puzzleColor}" class="color-input"/>
-      </div>
-      <div class="config color-config">
-        <h3>Text color</h3>
-        <input type="color" value="${textColor}" class="color-input"/>
-      </div>
-      <div class="config color-config">
-        <h3>Buttons color</h3>
-        <input type="color" class="color-input"/>
+      <div class="config theme-config">
+        <h3>Theme</h3>
+        <div class="theme-state">${themeStateText}</div>
       </div>
       <div class="config sizes-config">
         <h3>Size</h3>
