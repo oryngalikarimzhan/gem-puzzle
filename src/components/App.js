@@ -23,6 +23,7 @@ const initialStates = {
 };
 
 export const start = () => {
+  setTheme(initialStates.theme);
   window.onload = () => {
     renderApp();
 
@@ -32,7 +33,6 @@ export const start = () => {
         winSound,
       });
       addAppListeners(puzzle);
-      setTheme(puzzle.states.theme);
     });
   };
 };
