@@ -53,7 +53,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.m4a$/,
+        test: /\.(m4a|mp4)$/,
         type: 'asset/resource',
       },
       {

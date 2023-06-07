@@ -1,5 +1,5 @@
 import Audiowide from '../assets/fonts/Audiowide-Regular.woff2';
-import moveSoundSrc from '../assets/audio/move-sound.m4a';
+import moveSoundSrc from '../assets/audio/move-sound-1.mp4';
 import winSoundSrc from '../assets/audio/win-sound.m4a';
 
 import { Puzzle } from './Puzzle';
