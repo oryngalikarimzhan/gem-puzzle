@@ -1,7 +1,7 @@
 {
-  "name": "oryngalikarimzhan-jsfe2022q3",
+  "name": "gem-puzzle",
   "version": "1.0.0",
-  "description": "Private repository for @oryngalikarimzhan",
+  "description": "",
   "main": "index.js",
   "devDependencies": {
     "@babel/core": "^7.19.6",
@@ -35,12 +35,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rolling-scopes-school/oryngalikarimzhan-JSFE2022Q3.git"
+    "url": "git+https://github.com/oryngalikarimzhan/gem-puzzle.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rolling-scopes-school/oryngalikarimzhan-JSFE2022Q3/issues"
+    "url": "https://github.com/oryngalikarimzhan/gem-puzzle/issues"
   },
-  "homepage": "https://github.com/rolling-scopes-school/oryngalikarimzhan-JSFE2022Q3#readme"
+  "homepage": "https://github.com/oryngalikarimzhan/gem-puzzle/blob/master/README.md"
 }
