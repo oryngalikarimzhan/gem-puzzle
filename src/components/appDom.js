@@ -83,7 +83,7 @@ const renderResult = (place, { moves, time, date }) => {
   `;
 };
 
-export const renderConfigs = (soundStateText, themeStateText, currentSize) => {
+export const renderConfigs = (soundStateText, themeStateText, currentSize, fullScreenStateText) => {
   return `
     <section class="configs">
       <div class="config sound-config">
@@ -93,6 +93,10 @@ export const renderConfigs = (soundStateText, themeStateText, currentSize) => {
       <div class="config theme-config">
         <h3>Theme</h3>
         <div class="theme-state">${themeStateText}</div>
+      </div>
+      <div class="config theme-config">
+        <h3>Full screen</h3>
+        <div class="full-screen-state">${fullScreenStateText}</div>
       </div>
       <div class="config sizes-config">
         <h3>Size</h3>

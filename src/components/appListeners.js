@@ -6,6 +6,7 @@ import {
   toggleSound,
   toggleTheme,
   updateMovesText,
+  toggleFullScreenMode,
 } from './domActions';
 import { Tile } from './Tile';
 import { getFromLS, saveToLS } from './utils';
@@ -21,6 +22,7 @@ export const addAppListeners = (puzzle) => {
   addSoundStateButtonClickHandler(puzzle);
   addSizeChangeHandler(puzzle);
   addThemeStateButtonClickHandler(puzzle);
+  addFullScreenButtonClickHandler();
 };
 
 const addCanvasClickHandler = (puzzle) => {
@@ -130,6 +132,14 @@ const addThemeStateButtonClickHandler = (puzzle) => {
       puzzle.states.textColor = isDarkTheme ? '#b1cab1' : '#f0fff0';
       puzzle.states.tiles.forEach((tile) => (tile.textColor = puzzle.states.textColor));
       saveToLS({ theme, color: puzzle.states.color, textColor: puzzle.states.textColor }, 'theme');
+    }
+  });
+};
+
+const addFullScreenButtonClickHandler = () => {
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.full-screen-state')) {
+      toggleFullScreenMode();
     }
   });
 };

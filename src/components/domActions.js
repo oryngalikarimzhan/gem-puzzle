@@ -44,7 +44,12 @@ export const showConfigs = (states) => {
   showOverlay();
   const { isSoundOn, theme, size } = states;
   const soundStateText = defineSoundStateText(isSoundOn);
-  document.querySelector('.popup-content').innerHTML = renderConfigs(soundStateText, theme, size);
+  document.querySelector('.popup-content').innerHTML = renderConfigs(
+    soundStateText,
+    theme,
+    size,
+    defineFullScreenStateText(isInFullScreen())
+  );
 };
 
 const defineSoundStateText = (isSoundOn) => (isSoundOn ? 'on' : 'off');
@@ -66,3 +71,19 @@ export const toggleTheme = (states) => {
 };
 
 export const setTheme = (theme) => document.documentElement.setAttribute('data-theme', theme);
+
+const isInFullScreen = () => document.fullscreenElement && document.fullscreenElement !== null;
+const defineFullScreenStateText = (isInFullScreen) => (isInFullScreen ? 'on' : 'off');
+
+export const toggleFullScreenMode = () => {
+  const result = isInFullScreen();
+  const fullScreenStateText = defineFullScreenStateText(!result);
+
+  document.querySelector('.full-screen-state').innerHTML = fullScreenStateText;
+
+  if (!result) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+};
