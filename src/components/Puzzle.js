@@ -30,7 +30,7 @@ export class Puzzle {
 
     this.states.distance = distance;
     this.states.tileSize = tileSize;
-    this.states.distancePerFrame = 40 - 3.5 * size;
+    this.states.distancePerFrame = 30 - 2.4 * size;
     this.states.isWin = false;
     this.states.moves = 0;
     this.states.tiles = [];
